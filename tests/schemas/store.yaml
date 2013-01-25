@@ -1,0 +1,10 @@
+store:
+    name:
+        type: string
+        length: 80
+    active:
+        type: boolean
+    user_count:
+        type: integer
+    website:
+    phone:

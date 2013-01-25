@@ -1,0 +1,25 @@
+{
+    "name":         "mikejestes/scheezy",
+    "description":  "Overly simple DB Schema hack",
+    "keywords":     ["MySQL", "schema"],
+    "type":         "library",
+    "license":      "MIT",
+    "authors":      [
+        {
+            "name":      "Mike Estes",
+            "email":     "mikejestes@gmail.com",
+            "homepage":  "http://mikejestes.com"
+        }
+    ],
+
+    "require": {
+        "php":            ">=5.3.0",
+        "lespoilus/spyc": "dev-master"
+    },
+
+    "autoload": {
+        "psr-0": {
+            "Scheezy": "."
+        }
+    }
+}
