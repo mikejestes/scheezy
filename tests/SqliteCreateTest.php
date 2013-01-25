@@ -5,10 +5,17 @@ namespace Scheezy\Tests;
 class SqliteCreateTest extends \PHPUnit_Framework_TestCase
 {
 
+    public function setUp()
+    {
+        $this->pdo = new \PDO('sqlite::memory:');
+        $this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+
+    }
+
     public function testCreate()
     {
-        $schema = new \Scheezy\Schema(dirname(__FILE__) . '/schemas/store.yaml');
-        $sql = $schema->toString('sqlite');
+        $schema = new \Scheezy\Schema(dirname(__FILE__) . '/schemas/store.yaml', $this->pdo);
+        $sql = $schema->toString();
 
         $expected = <<<END
 CREATE TABLE `store` (
@@ -26,12 +33,10 @@ END;
 
     public function testExecute()
     {
-        $pdo = new \PDO('sqlite::memory:');
-        $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-        $schema = new \Scheezy\Schema(dirname(__FILE__) . '/schemas/store.yaml');
-        $sql = $schema->execute($pdo);
+        $schema = new \Scheezy\Schema(dirname(__FILE__) . '/schemas/store.yaml', $this->pdo);
+        $sql = $schema->execute();
 
-        $stmt = $pdo->query("select name from sqlite_master where type = 'table' and name = 'store'");
+        $stmt = $this->pdo->query("select name from sqlite_master where type = 'table' and name = 'store'");
         $this->assertEquals(array('name' => 'store'), $stmt->fetch(\PDO::FETCH_ASSOC));
     }
 }

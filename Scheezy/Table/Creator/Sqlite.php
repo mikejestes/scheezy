@@ -2,12 +2,8 @@
 
 namespace Scheezy\Table\Creator;
 
-class Sqlite extends Mysql
+class Sqlite extends General
 {
-    protected $yaml;
-    protected $table;
-    protected $indexes = array();
-
     public function createInteger($name, $options)
     {
         $extra = ' NOT NULL';

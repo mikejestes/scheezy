@@ -3,3 +3,4 @@ composer.lock
 composer-test.lock
 vendor/
 coverage
+test.db

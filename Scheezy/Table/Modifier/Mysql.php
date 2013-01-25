@@ -1,6 +1,6 @@
 <?php
 
-namespace Scheezy\Table\Creator;
+namespace Scheezy\Table\Modifier;
 
 class Mysql extends General
 {
