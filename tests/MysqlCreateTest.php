@@ -31,4 +31,22 @@ END;
         $this->assertEquals($expected, $sql);
 
     }
+
+    public function testCreateJoins()
+    {
+        $schema = new \Scheezy\Schema(dirname(__FILE__) . '/schemas/store_user_join.yaml');
+        $sql = $schema->toString('mysql');
+
+        $expected = <<<END
+CREATE TABLE `store_user_join` (
+`store_id` int(11) NOT NULL,
+`user_id` int(11) NOT NULL,
+INDEX (`store_id`),
+INDEX (`user_id`)
+)
+END;
+
+        $this->assertEquals($expected, $sql);
+
+    }
 }

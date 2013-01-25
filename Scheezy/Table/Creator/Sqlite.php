@@ -6,6 +6,7 @@ class Sqlite extends Mysql
 {
     protected $yaml;
     protected $table;
+    protected $indexes = array();
 
     public function createInteger($name, $options)
     {
@@ -22,19 +23,8 @@ class Sqlite extends Mysql
         return "`$name` INTEGER$extra";
     }
 
-    protected function injectPrimaryKey($table)
+    protected function addPrimaryKey($name, $options)
     {
-
-        if (!isset($this->yaml[$table]['id'])) {
-            $this->yaml[$table] = array_merge(
-                array('id' => array(
-                    'type' => 'integer',
-                    'auto_increment' => true,
-                    'primary_key' => true,
-                )),
-                $this->yaml[$table]
-            );
-        }
 
     }
 }

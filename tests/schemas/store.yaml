@@ -1,4 +1,6 @@
-store:
+table: store
+columns:
+    id:
     name:
         type: string
         length: 80

@@ -6,6 +6,7 @@ class Mysql
 {
     protected $yaml;
     protected $table;
+    protected $indexes = array();
 
     public function __construct($table, $yaml)
     {
@@ -17,10 +18,13 @@ class Mysql
     {
         $sql = "CREATE TABLE `{$this->table}` (\n";
 
-        $this->injectPrimaryKey($this->table);
-
-        foreach ($this->yaml[$this->table] as $fieldName => $fieldOptions) {
+        foreach ($this->yaml['columns'] as $fieldName => $fieldOptions) {
             $sql .= $this->createField($fieldName, $fieldOptions);
+            $sql .= ",\n";
+        }
+
+        foreach ($this->indexes as $indexOptions) {
+            $sql .= $this->createIndex($indexOptions);
             $sql .= ",\n";
         }
 
@@ -33,6 +37,17 @@ class Mysql
 
     public function createField($name, $options)
     {
+        if ($name === 'id') {
+            return $this->createId($name, (array)$options);
+        }
+
+        if (isset($options['index'])) {
+            $this->indexes[] = array(
+                'name' => $name,
+                'type' => 'INDEX',
+            );
+        }
+
         $type = $this->getOption($options, 'type', 'string');
         $fnc = 'create' . ucfirst($type);
         return $this->$fnc($name, $options);
@@ -57,9 +72,9 @@ class Mysql
         return "`$name` tinyint(1) NOT NULL";
     }
 
-    public function createKey($name, $options)
+    public function createIndex($options)
     {
-        return "PRIMARY KEY (`{$options['name']}`)";
+        return "{$options['type']} (`{$options['name']}`)";
     }
 
     protected function getOption($options, $key, $default = null)
@@ -71,24 +86,28 @@ class Mysql
         return $options[$key];
     }
 
-    protected function injectPrimaryKey($table)
+    protected function addPrimaryKey($name, $options)
+    {
+        $this->indexes[] = array(
+            'name' => $name,
+            'type' => 'PRIMARY KEY',
+        );
+    }
+
+    public function createId($name, $options)
     {
 
-        if (!isset($this->yaml[$table]['id'])) {
-            $this->yaml[$table] = array_merge(
-                array('id' => array(
-                    'type' => 'integer',
-                    'auto_increment' => true,
-                )),
-                $this->yaml[$table]
-            );
-        }
+        $this->addPrimaryKey($name, $options);
 
-        if (!isset($this->yaml[$table]['primary_key'])) {
-            $this->yaml[$table]['primary_key'] = array(
-                'type' => 'key',
-                'name' => 'id',
-            );
-        }
+        $options = array_merge(
+            $options,
+            array(
+                'auto_increment' => true,
+                'primary_key' => true,
+            )
+        );
+
+        return $this->createInteger($name, $options);
+
     }
 }

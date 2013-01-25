@@ -13,8 +13,7 @@ class Schema
 
     public function getTableName()
     {
-        $keys = array_keys($this->yaml);
-        return array_shift($keys);
+        return $this->yaml['table'];
     }
 
     public function toString($type)

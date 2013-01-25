@@ -1,0 +1,8 @@
+table: store_user_join
+columns:
+    store_id:
+        type: integer
+        index: true
+    user_id:
+        type: integer
+        index: true
