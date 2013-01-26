@@ -50,4 +50,26 @@ class Sqlite implements \Scheezy\Table
         $columns = $result->fetchAll(\PDO::FETCH_COLUMN, 1);
         return in_array($column, $columns);
     }
+
+    public function indexes()
+    {
+        $sql = "PRAGMA INDEX_LIST('$this->name')";
+        $result = $this->connection->query($sql);
+        return $result->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    public function indexExists($name)
+    {
+        $sql = "PRAGMA INDEX_LIST('$this->name')";
+        $result = $this->connection->query($sql);
+        $indexes = $result->fetchAll(\PDO::FETCH_ASSOC);
+
+        $exists = array_filter(
+            $indexes,
+            function ($indexData) use ($name) {
+                return $indexData['name'] == $name;
+            }
+        );
+        return count($exists) > 0;
+    }
 }

@@ -8,4 +8,5 @@ interface Table
     public function columns();
     public function columnDetail($column);
     public function columnExists($column);
+    public function indexExists($name);
 }

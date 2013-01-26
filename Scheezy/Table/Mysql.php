@@ -49,4 +49,27 @@ class Mysql implements \Scheezy\Table
         $columns = $result->fetchAll(\PDO::FETCH_COLUMN, 0);
         return in_array($column, $columns);
     }
+
+    public function indexes()
+    {
+        $sql = "SHOW INDEXES IN `$this->name`";
+        $result = $this->connection->query($sql);
+        return $result->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    public function indexExists($name)
+    {
+        $sql = "SHOW INDEXES IN `$this->name`";
+        $result = $this->connection->query($sql);
+        $indexes = $result->fetchAll(\PDO::FETCH_ASSOC);
+
+        $exists = array_filter(
+            $indexes,
+            function ($indexData) use ($name) {
+                print_r($indexData, $name);
+                return $indexData['Column_name'] == $name;
+            }
+        );
+        return count($exists) > 0;
+    }
 }

@@ -43,7 +43,7 @@ A column defaults to string type, unless the name is `id` which is given an inte
 
 ## Database engines
 
-Currently supports mysql and sqlite through PDO classes.
+Currently supports mysql and sqlite through PDO classes. Sqlite support for changing or dropping columns is pending.
 
 ## API
 

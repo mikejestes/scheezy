@@ -27,20 +27,20 @@ END;
         $sql = $schema->toString();
 
         $expected = <<<END
-ALTER TABLE `store` (
-ADD COLUMN `name` varchar(80) NOT NULL,
-ADD COLUMN `active` tinyint(1) NOT NULL,
-ADD COLUMN `user_count` INTEGER NOT NULL,
-ADD COLUMN `website` varchar(255) NOT NULL
-)
+ALTER TABLE `store` ADD COLUMN `name` varchar(80);
+ALTER TABLE `store` ADD COLUMN `active` tinyint(1);
+ALTER TABLE `store` ADD COLUMN `user_count` INTEGER;
+ALTER TABLE `store` ADD COLUMN `website` varchar(255)
 END;
 
         $this->assertEquals($expected, $sql);
+        $schema->synchronize();
 
     }
 
     public function testDropColumns()
     {
+        $this->markTestSkipped('TODO: sqlite drop support');
         $yaml = <<<END
 table: store
 columns:
@@ -52,17 +52,18 @@ END;
         $sql = $schema->toString();
 
         $expected = <<<END
-ALTER TABLE `store` (
-DROP COLUMN `phone`
-)
+ALTER TABLE `store` DROP COLUMN `phone`
 END;
 
         $this->assertEquals($expected, $sql);
+        $schema->synchronize();
 
     }
 
     public function testAlterColumns()
     {
+        $this->markTestSkipped('TODO sqlite column change support');
+
         $sql = <<<END
 CREATE TABLE `store` (
 `id` INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -82,13 +83,12 @@ END;
         $sql = $schema->toString();
 
         $expected = <<<END
-ALTER TABLE `store` (
-CHANGE `name` varchar(80) NOT NULL,
-CHANGE `active` tinyint(1) NOT NULL
-)
+ALTER TABLE `store` CHANGE `name` varchar(80);
+ALTER TABLE `store` CHANGE `active` tinyint(1)
 END;
 
         $this->assertEquals($expected, $sql);
+        $schema->synchronize();
 
     }
 
@@ -111,15 +111,14 @@ END;
         $sql = $schema->toString();
 
         $expected = <<<END
-ALTER TABLE `store` (
-ADD COLUMN `email` varchar(255) NOT NULL,
-ADD COLUMN `type` varchar(255) NOT NULL,
-UNIQUE (`email`),
-INDEX (`type`)
-)
+ALTER TABLE `store` ADD COLUMN `email` varchar(255);
+ALTER TABLE `store` ADD COLUMN `type` varchar(255);
+CREATE UNIQUE INDEX `email` ON `store` (`email`);
+CREATE INDEX `type` ON `store` (`type`)
 END;
 
         $this->assertEquals($expected, $sql);
+        $schema->synchronize();
 
     }
 }

@@ -28,15 +28,15 @@ END;
         $sql = $schema->toString();
 
         $expected = <<<END
-ALTER TABLE `store` (
+ALTER TABLE `store`
 ADD COLUMN `name` varchar(80) NOT NULL,
 ADD COLUMN `active` tinyint(1) NOT NULL,
 ADD COLUMN `user_count` int(11) NOT NULL,
 ADD COLUMN `website` varchar(255) NOT NULL
-)
 END;
 
         $this->assertEquals($expected, $sql);
+        $schema->synchronize();
 
     }
 
@@ -53,12 +53,12 @@ END;
         $sql = $schema->toString();
 
         $expected = <<<END
-ALTER TABLE `store` (
+ALTER TABLE `store`
 DROP COLUMN `phone`
-)
 END;
 
         $this->assertEquals($expected, $sql);
+        $schema->synchronize();
 
     }
 
@@ -84,13 +84,13 @@ END;
         $sql = $schema->toString();
 
         $expected = <<<END
-ALTER TABLE `store` (
-CHANGE `name` varchar(80) NOT NULL,
-CHANGE `active` tinyint(1) NOT NULL
-)
+ALTER TABLE `store`
+CHANGE `name` `name` varchar(80) NOT NULL,
+CHANGE `active` `active` tinyint(1) NOT NULL
 END;
 
         $this->assertEquals($expected, $sql);
+        $schema->synchronize();
 
     }
 
@@ -112,15 +112,15 @@ END;
         $sql = $schema->toString();
 
         $expected = <<<END
-ALTER TABLE `store` (
+ALTER TABLE `store`
 ADD COLUMN `email` varchar(255) NOT NULL,
-ADD COLUMN `type` varchar(255) NOT NULL,
-UNIQUE (`email`),
-INDEX (`type`)
-)
+ADD COLUMN `type` varchar(255) NOT NULL;
+UNIQUE (`email`) ON `store`;
+INDEX (`type`) ON `store`
 END;
 
         $this->assertEquals($expected, $sql);
+        $schema->synchronize();
 
     }
 }

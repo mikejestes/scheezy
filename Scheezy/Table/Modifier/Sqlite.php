@@ -4,6 +4,23 @@ namespace Scheezy\Table\Modifier;
 
 class Sqlite extends Mysql
 {
+    protected function combineCommands($modifications, $postCommands)
+    {
+        $commands = array();
+
+        $commands = array_map(
+            function ($line) {
+                $line = str_replace(' NOT NULL', '', $line);
+                return "ALTER TABLE `{$this->table->name}` $line";
+            },
+            $modifications
+        );
+
+        $sql = implode(";\n", array_merge($commands, $postCommands));
+
+        return $sql;
+    }
+
     public function modifyField($name, $options)
     {
         $currentColumnDetails = $this->table->columnDetail($name);
@@ -37,5 +54,24 @@ class Sqlite extends Mysql
         }
 
         return "`$name` INTEGER$extra";
+    }
+
+    public function createIndex($options)
+    {
+        if ($options['type'] === true) {
+            $options['type'] = '';
+        }
+
+        $options['type'] = strtoupper($options['type']);
+        if ($options['type']) {
+            $options['type'] .= ' ';
+        }
+
+        return "CREATE {$options['type']}INDEX `{$options['name']}` ON `{$this->table->name}` (`{$options['name']}`)";
+    }
+
+    public function dropIndex($name)
+    {
+        return "DROP INDEX `$name`";
     }
 }

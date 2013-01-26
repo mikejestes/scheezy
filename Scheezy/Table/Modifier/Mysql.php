@@ -16,30 +16,72 @@ class Mysql extends \Scheezy\Table\Creator\Mysql
 
     public function toString()
     {
-        $sql = "ALTER TABLE `{$this->table->name}` (\n";
+        $modifications = array();
+        $postCommands = array();
 
+        // see if columns need to be dropped
         foreach ($this->table->columns() as $column) {
             if (!in_array($column->Field, array_keys($this->yaml['columns']))) {
-                $sql .= $this->dropField($column->Field);
-                $sql .= ",\n";
+                $modifications[] = $this->dropField($column->Field);
             }
         }
 
+        // see if columns need to be modified or added
         foreach ($this->yaml['columns'] as $fieldName => $fieldOptions) {
-            $line = $this->insureField($fieldName, $fieldOptions);
-            if ($line) {
-                $sql .= "$line,\n";
+            $modifications[] = $this->insureField($fieldName, $fieldOptions);
+        }
+
+        // see what indexes need to be added
+        $desiredIndexes = array();
+        foreach ($this->indexes as $indexOptions) {
+            $desiredIndexes[] = $indexOptions['name'];
+            $postCommands[] = $this->insureIndex($indexOptions);
+        }
+
+        // see what indexes need to be dropped
+        $columnKey = 'Column_name';
+        $nameKey = 'Key_name';
+
+        // HACK
+        if ($this->table instanceof \Scheezy\Table\Sqlite) {
+            $columnKey = $nameKey = 'name';
+        }
+
+        foreach ($this->table->indexes() as $index) {
+            if (!in_array($index[$columnKey], $desiredIndexes) && $index[$nameKey] != 'PRIMARY') {
+                $postCommands[] = $this->dropIndex($index[$nameKey]);
             }
         }
 
-        foreach ($this->indexes as $indexOptions) {
-            $sql .= $this->createIndex($indexOptions);
-            $sql .= ",\n";
+        $modifications = array_filter(
+            $modifications,
+            function ($line) {
+                return strlen($line) > 0;
+            }
+        );
+        $postCommands = array_filter(
+            $postCommands,
+            function ($line) {
+                return strlen($line) > 0;
+            }
+        );
+
+        return $this->combineCommands($modifications, $postCommands);
+    }
+
+    protected function combineCommands($modifications, $postCommands)
+    {
+        $commands = array();
+
+        if (count($modifications)) {
+            $action = implode(",\n", $modifications);
+            if (count($modifications) > 0) {
+                $action = "\n$action";
+            }
+            $commands[] = "ALTER TABLE `{$this->table->name}`$action";
         }
 
-        $sql = rtrim($sql, ",\n");
-
-        $sql .= "\n)";
+        $sql = implode(";\n", array_merge($commands, $postCommands));
 
         return $sql;
     }
@@ -51,6 +93,26 @@ class Mysql extends \Scheezy\Table\Creator\Mysql
         } else {
             return 'ADD COLUMN ' . $this->createField($name, $options);
         }
+    }
+
+    public function insureIndex($options)
+    {
+        if ($this->table->indexExists($options['name'])) {
+            // return $this->modifyField($name, $options);
+        } else {
+            return $this->createIndex($options);
+        }
+    }
+
+    public function createIndex($options)
+    {
+        if ($options['type'] === true) {
+            $options['type'] = 'INDEX';
+        }
+
+        $options['type'] = strtoupper($options['type']);
+
+        return "{$options['type']} (`{$options['name']}`) ON `{$this->table->name}`";
     }
 
     public function modifyField($name, $options)
@@ -65,12 +127,17 @@ class Mysql extends \Scheezy\Table\Creator\Mysql
             $currentLine .= " AUTO_INCREMENT";
         }
         if ($newLine != $currentLine) {
-            return 'CHANGE ' . $newLine;
+            return "CHANGE `$name` " . $newLine;
         }
     }
 
     public function dropField($name)
     {
         return "DROP COLUMN `$name`";
+    }
+
+    public function dropIndex($name)
+    {
+        return "DROP INDEX `$name` ON `{$this->table->name}`";
     }
 }
