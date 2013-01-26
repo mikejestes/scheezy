@@ -22,7 +22,8 @@ END;
 
     public function testAddColumns()
     {
-        $schema = new \Scheezy\Schema(dirname(__FILE__) . '/schemas/store.yaml', $this->pdo);
+        $schema = new \Scheezy\Schema($this->pdo);
+        $schema->loadFile(dirname(__FILE__) . '/schemas/store.yaml');
         $sql = $schema->toString();
 
         $expected = <<<END
@@ -46,8 +47,8 @@ columns:
     id:
 END;
 
-
-        $schema = new \Scheezy\Schema($yaml, $this->pdo);
+        $schema = new \Scheezy\Schema($this->pdo);
+        $schema->loadString($yaml);
         $sql = $schema->toString();
 
         $expected = <<<END
@@ -76,7 +77,8 @@ END;
         $this->pdo->exec('DROP TABLE IF EXISTS `store`');
         $this->pdo->exec($sql);
 
-        $schema = new \Scheezy\Schema(dirname(__FILE__) . '/schemas/store.yaml', $this->pdo);
+        $schema = new \Scheezy\Schema($this->pdo);
+        $schema->loadFile(dirname(__FILE__) . '/schemas/store.yaml');
         $sql = $schema->toString();
 
         $expected = <<<END
@@ -104,7 +106,8 @@ columns:
 END;
 
 
-        $schema = new \Scheezy\Schema($yaml, $this->pdo);
+        $schema = new \Scheezy\Schema($this->pdo);
+        $schema->loadString($yaml);
         $sql = $schema->toString();
 
         $expected = <<<END

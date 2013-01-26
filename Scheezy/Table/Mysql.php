@@ -4,8 +4,8 @@ namespace Scheezy\Table;
 
 class Mysql implements \Scheezy\Table
 {
-
     public $name;
+    private $connection;
 
     public function __construct($name, \PDO $connection)
     {
@@ -13,7 +13,7 @@ class Mysql implements \Scheezy\Table
         $this->connection = $connection;
     }
 
-    public function exists($type)
+    public function exists()
     {
         $sql = "show tables";
         $result = $this->connection->query($sql);

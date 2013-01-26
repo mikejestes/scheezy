@@ -4,49 +4,58 @@ namespace Scheezy;
 
 class Schema
 {
-    private $yaml;
+    private $connection;
+    private $databases = array();
 
-    public function __construct($structure, \PDO $connection)
+    public function __construct(\PDO $connection)
     {
-        if (is_file($structure)) {
-            $this->yaml = spyc_load_file($structure);
-        } else {
-            $this->yaml = spyc_load($structure);
-        }
         $this->connection = $connection;
     }
 
-    public function getTableName()
+    public function loadString($str)
     {
-        return $this->yaml['table'];
+        $yaml = spyc_load($str);
+        $database = new Database($yaml, $this->connection);
+        $this->databases[] = $database;
+        return $database;
     }
 
-    public function getTable()
+    public function loadFile($file)
     {
-        $type = $this->connection->getAttribute(\PDO::ATTR_DRIVER_NAME);
-        $class = 'Scheezy\\Table\\' . ucfirst($type);
-        return new $class($this->getTableName(), $this->connection);
+        $yaml = spyc_load_file($file);
+        $database = new Database($yaml, $this->connection);
+        $this->databases[] = $database;
+        return $database;
+    }
+
+    public function loadDirectory($directory)
+    {
+        $files = glob($directory . '/*.yaml');
+        foreach ($files as $file) {
+            $this->loadFile($file);
+        }
+    }
+
+    public function loadGlob($files)
+    {
+        foreach ($files as $file) {
+            $this->loadFile($file);
+        }
+    }
+
+    public function synchronize()
+    {
+        foreach ($this->databases as $database) {
+            $database->synchronize();
+        }
     }
 
     public function toString()
     {
-        $table = $this->getTable();
-        $type = $this->connection->getAttribute(\PDO::ATTR_DRIVER_NAME);
-
-        if ($table->exists($type)) {
-            $prefix = 'Scheezy\\Table\\Modifier\\';
-        } else {
-            $prefix = 'Scheezy\\Table\\Creator\\';
+        $sql = '';
+        foreach ($this->databases as $database) {
+            $sql .= $database->toString();
         }
-
-        $class = $prefix . ucfirst($type);
-        $modifier = new $class($table, $this->yaml);
-        return $modifier->toString();
-    }
-
-    public function execute()
-    {
-        $sql = $this->toString($this->connection->getAttribute(\PDO::ATTR_DRIVER_NAME));
-        $this->connection->exec($sql);
+        return $sql;
     }
 }

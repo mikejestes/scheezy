@@ -4,8 +4,8 @@ namespace Scheezy\Table;
 
 class Sqlite implements \Scheezy\Table
 {
-
     public $name;
+    private $connection;
 
     public function __construct($name, \PDO $connection)
     {
@@ -13,7 +13,7 @@ class Sqlite implements \Scheezy\Table
         $this->connection = $connection;
     }
 
-    public function exists($type)
+    public function exists()
     {
         $sql = "SELECT name FROM sqlite_master WHERE type = 'table'";
         $result = $this->connection->query($sql);

@@ -10,17 +10,20 @@ class MysqlCreateTest extends \PHPUnit_Framework_TestCase
         $this->pdo = new \PDO("mysql:host=localhost;dbname=scheezy", 'scheezy', '');
         $this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
         $this->pdo->exec('DROP TABLE IF EXISTS `store`');
+        $this->pdo->exec('DROP TABLE IF EXISTS `store_user_join`');
     }
 
     public function testTableName()
     {
-        $schema = new \Scheezy\Schema(dirname(__FILE__) . '/schemas/store.yaml', $this->pdo);
-        $this->assertEquals('store', $schema->getTableName());
+        $schema = new \Scheezy\Schema($this->pdo);
+        $db = $schema->loadFile(dirname(__FILE__) . '/schemas/store.yaml');
+        $this->assertEquals('store', $db->getTableName());
     }
 
     public function testCreate()
     {
-        $schema = new \Scheezy\Schema(dirname(__FILE__) . '/schemas/store.yaml', $this->pdo);
+        $schema = new \Scheezy\Schema($this->pdo);
+        $schema->loadFile(dirname(__FILE__) . '/schemas/store.yaml');
         $sql = $schema->toString();
 
         $expected = <<<END
@@ -41,7 +44,8 @@ END;
 
     public function testCreateJoins()
     {
-        $schema = new \Scheezy\Schema(dirname(__FILE__) . '/schemas/store_user_join.yaml', $this->pdo);
+        $schema = new \Scheezy\Schema($this->pdo);
+        $schema->loadFile(dirname(__FILE__) . '/schemas/store_user_join.yaml');
         $sql = $schema->toString();
 
         $expected = <<<END

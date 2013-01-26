@@ -14,7 +14,8 @@ class SqliteCreateTest extends \PHPUnit_Framework_TestCase
 
     public function testCreate()
     {
-        $schema = new \Scheezy\Schema(dirname(__FILE__) . '/schemas/store.yaml', $this->pdo);
+        $schema = new \Scheezy\Schema($this->pdo);
+        $schema->loadFile(dirname(__FILE__) . '/schemas/store.yaml');
         $sql = $schema->toString();
 
         $expected = <<<END
@@ -33,8 +34,9 @@ END;
 
     public function testExecute()
     {
-        $schema = new \Scheezy\Schema(dirname(__FILE__) . '/schemas/store.yaml', $this->pdo);
-        $sql = $schema->execute();
+        $schema = new \Scheezy\Schema($this->pdo);
+        $schema->loadFile(dirname(__FILE__) . '/schemas/store.yaml');
+        $sql = $schema->synchronize();
 
         $stmt = $this->pdo->query("select name from sqlite_master where type = 'table' and name = 'store'");
         $this->assertEquals(array('name' => 'store'), $stmt->fetch(\PDO::FETCH_ASSOC));
