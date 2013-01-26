@@ -2,7 +2,7 @@
 
 namespace Scheezy\Table\Modifier;
 
-class Sqlite extends General
+class Sqlite extends Mysql
 {
     public function modifyField($name, $options)
     {

@@ -2,7 +2,7 @@
 
 namespace Scheezy\Table\Creator;
 
-class Sqlite extends General
+class Sqlite extends Mysql
 {
     public function createInteger($name, $options)
     {
