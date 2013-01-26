@@ -50,6 +50,10 @@ class Mysql
 
         $type = $this->getOption($options, 'type', 'string');
         $fnc = 'create' . ucfirst($type);
+
+        if (!method_exists($this, $fnc)) {
+            throw new \Exception('Unknown Scheezy type: ' . $type);
+        }
         return $this->$fnc($name, $options);
     }
 
@@ -72,6 +76,33 @@ class Mysql
         return "`$name` tinyint(1) NOT NULL";
     }
 
+    public function createDatetime($name)
+    {
+        return "`$name` datetime NOT NULL";
+    }
+
+    public function createDate($name)
+    {
+        return "`$name` date NOT NULL";
+    }
+
+    public function createTimestamp($name)
+    {
+        return "`$name` timestamp NOT NULL";
+    }
+
+    public function createText($name)
+    {
+        return "`$name` text NOT NULL";
+    }
+
+    public function createDecimal($name, $options)
+    {
+        $precision = $this->getOption($options, 'precision', 10);
+        $scale = $this->getOption($options, 'scale', 2);
+        return "`$name` decimal($precision,$scale) NOT NULL";
+    }
+
     public function createIndex($options)
     {
         if ($options['type'] === true) {
@@ -92,7 +123,7 @@ class Mysql
         return $options[$key];
     }
 
-    protected function addPrimaryKey($name, $options)
+    protected function addPrimaryKey($name)
     {
         $this->indexes[] = array(
             'name' => $name,

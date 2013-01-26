@@ -19,7 +19,7 @@ class Sqlite extends Mysql
         return "`$name` INTEGER$extra";
     }
 
-    protected function addPrimaryKey($name, $options)
+    protected function addPrimaryKey($name)
     {
 
     }

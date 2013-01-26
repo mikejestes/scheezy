@@ -9,20 +9,34 @@ For when you don't want to migrate up and down, just dictate the database schema
 
 ```yaml
 table: store
-    columns:
-        id:
-        name:
-            type: string
-            length: 80
-        email:
-            index: unique
-        active:
-            type: boolean
-        user_count:
-            type: integer
-            index: true
-        website:
-        phone:
+columns:
+    id:
+    name:
+        type: string
+        length: 80
+    email:
+        index: unique
+    active:
+        type: boolean
+    user_count:
+        type: integer
+        index: true
+    website:
+    created:
+        type: datetime
+    updated:
+        type: timestamp
+    calendar:
+        type: date
+    paragraph:
+        type: text
+    price:
+        type: decimal
+    latitude:
+        type: decimal
+        precision: 9
+        scale: 6
+
 ```
 
 A column defaults to string type, unless the name is `id` which is given an integer type, a primary key, and auto_increment.
