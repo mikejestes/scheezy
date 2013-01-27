@@ -15,7 +15,7 @@ class NoOpTest extends \PHPUnit_Framework_TestCase
         $this->performTest($pdo);
     }
 
-    public function zztestNoOpSqlite()
+    public function testNoOpSqlite()
     {
         $pdo = new \PDO('sqlite::memory:');
         $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
@@ -40,9 +40,11 @@ class NoOpTest extends \PHPUnit_Framework_TestCase
         $schema = new \Scheezy\Schema($pdo);
         $schema->loadFile(dirname(__FILE__) . '/schemas/store_user_join.yaml');
         $this->assertEquals('', $schema->toString());
+        $schema->synchronize();
 
         $schema = new \Scheezy\Schema($pdo);
         $schema->loadFile(dirname(__FILE__) . '/schemas/store.yaml');
         $this->assertEquals('', $schema->toString());
+        $schema->synchronize();
     }
 }

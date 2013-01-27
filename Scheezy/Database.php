@@ -43,6 +43,8 @@ class Database
     public function synchronize()
     {
         $sql = $this->toString($this->connection->getAttribute(\PDO::ATTR_DRIVER_NAME));
-        $this->connection->exec($sql);
+        if (strlen($sql)) {
+            $this->connection->exec($sql);
+        }
     }
 }
