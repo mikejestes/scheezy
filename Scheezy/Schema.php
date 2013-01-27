@@ -2,6 +2,8 @@
 
 namespace Scheezy;
 
+use Symfony\Component\Yaml\Yaml;
+
 class Schema
 {
     private $connection;
@@ -14,7 +16,7 @@ class Schema
 
     public function loadString($str)
     {
-        $yaml = spyc_load($str);
+        $yaml = Yaml::parse($str);
         $database = new Database($yaml, $this->connection);
         $this->databases[] = $database;
         return $database;
@@ -22,7 +24,7 @@ class Schema
 
     public function loadFile($file)
     {
-        $yaml = spyc_load_file($file);
+        $yaml = Yaml::parse($file);
         $database = new Database($yaml, $this->connection);
         $this->databases[] = $database;
         return $database;
