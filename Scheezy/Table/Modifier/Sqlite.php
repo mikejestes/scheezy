@@ -10,7 +10,7 @@ class Sqlite extends Mysql
         $tableName = $this->table->name;
 
         $commands = array_map(
-            function ($line) {
+            function ($line) use ($tableName) {
                 $line = str_replace(' NOT NULL', '', $line);
                 return "ALTER TABLE `{$tableName}` $line";
             },
