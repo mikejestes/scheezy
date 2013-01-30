@@ -1,7 +1,8 @@
 {
     "name":         "mikejestes/scheezy",
-    "description":  "Overly simple DB Schema hack",
+    "description":  "Translate yaml schema definitions into real actual databases",
     "keywords":     ["MySQL", "schema"],
+    "homepage":     "https://github.com/mikejestes/scheezy",
     "type":         "library",
     "license":      "MIT",
     "authors":      [
