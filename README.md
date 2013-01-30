@@ -7,6 +7,25 @@ For when you don't want to migrate up and down, just dictate the database schema
 
 [![Build Status](https://travis-ci.org/mikejestes/scheezy.png?branch=master)](https://travis-ci.org/mikejestes/scheezy)
 
+## Installation
+
+Add to your `composer.json` file:
+
+```yaml
+    {
+        "require": {
+            "mikejestes/scheezy": "*"
+        },
+        
+        ...
+    }
+```
+
+Then download and run [composer](http://getcomposer.org/):
+
+    curl -s https://getcomposer.org/installer | php
+    php composer.phar install
+
 ## Schema Definition Syntax
 
 ```yaml
@@ -66,3 +85,9 @@ $schema = new \Scheezy\Schema($pdoHandle);
 $schema->loadFile('/path/to/ponys.yaml');
 $schema->synchronize();
 ```
+
+## Alternatives
+
+For actual migration style (up, down, rollback) try one of these:
+* https://github.com/doctrine/migrations
+* https://github.com/davedevelopment/phpmig
