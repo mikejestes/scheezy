@@ -5,3 +5,6 @@ php:
 script: phpunit --bootstrap tests/bootstrap.php --coverage-text tests/
 before_script:
    - composer install
+   - mysql -e 'create database scheezy_test;'
+services:
+    - mysql
