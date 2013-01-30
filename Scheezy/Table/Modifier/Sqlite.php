@@ -7,11 +7,12 @@ class Sqlite extends Mysql
     public function combineCommands($modifications, $postCommands)
     {
         $commands = array();
+        $tableName = $this->table->name;
 
         $commands = array_map(
             function ($line) {
                 $line = str_replace(' NOT NULL', '', $line);
-                return "ALTER TABLE `{$this->table->name}` $line";
+                return "ALTER TABLE `{$tableName}` $line";
             },
             $modifications
         );
