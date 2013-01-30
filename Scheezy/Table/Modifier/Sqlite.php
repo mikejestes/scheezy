@@ -4,7 +4,7 @@ namespace Scheezy\Table\Modifier;
 
 class Sqlite extends Mysql
 {
-    protected function combineCommands($modifications, $postCommands)
+    public function combineCommands($modifications, $postCommands)
     {
         $commands = array();
 
@@ -23,52 +23,15 @@ class Sqlite extends Mysql
 
     public function modifyField($name, $options)
     {
-        $currentColumnDetails = $this->table->columnDetail($name);
-        $newLine = $this->createField($name, $options, false);
-        $currentLine = "`$name` {$currentColumnDetails->Type}";
-        if ($currentColumnDetails->Null == 'NO') {
-            $currentLine .= " NOT NULL";
-        }
-        if ($currentColumnDetails->PrimaryKey) {
-            $currentLine .= " PRIMARY KEY";
-        }
-        if ($currentColumnDetails->Extra == 'auto_increment') {
-            $currentLine .= " AUTOINCREMENT";
-        }
-
-        if ($newLine != $currentLine) {
-            return 'CHANGE ' . $newLine;
-        }
+        $this->table->createField($name, $options, false);
+        return '';
     }
 
-    public function createInteger($name, $options)
+    public function dropField($name)
     {
-        $extra = ' NOT NULL';
-
-        // if ($this->getOption($options, 'primary_key')) {
-        //     $extra = ' PRIMARY KEY';
-        // }
-
-        if ($this->getOption($options, 'auto_increment')) {
-            $extra = ' PRIMARY KEY AUTOINCREMENT';
-        }
-
-        return "`$name` INTEGER$extra";
+        return '';
     }
 
-    public function createIndex($options)
-    {
-        if ($options['type'] === true) {
-            $options['type'] = '';
-        }
-
-        $options['type'] = strtoupper($options['type']);
-        if ($options['type']) {
-            $options['type'] .= ' ';
-        }
-
-        return "CREATE {$options['type']}INDEX `{$options['name']}` ON `{$this->table->name}` (`{$options['name']}`)";
-    }
 
     public function dropIndex($name)
     {

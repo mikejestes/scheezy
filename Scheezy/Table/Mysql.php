@@ -2,7 +2,7 @@
 
 namespace Scheezy\Table;
 
-class Mysql implements \Scheezy\Table
+class Mysql extends \Scheezy\Table
 {
     public $name;
     private $connection;
@@ -11,6 +11,18 @@ class Mysql implements \Scheezy\Table
     {
         $this->name = $name;
         $this->connection = $connection;
+        $this->definitions = new \Scheezy\Column\Definition('mysql');
+    }
+
+    public function createIndex($options)
+    {
+        if ($options['type'] === true) {
+            $options['type'] = 'INDEX';
+        }
+
+        $options['type'] = strtoupper($options['type']);
+
+        return "{$options['type']} (`{$options['name']}`) ON `{$this->name}`";
     }
 
     public function exists()

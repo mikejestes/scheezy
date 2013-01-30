@@ -38,9 +38,11 @@ END;
 
     }
 
+    /**
+     * TODO: implement column dropping in SQLITE
+     */
     public function testDropColumns()
     {
-        $this->markTestSkipped('TODO: sqlite drop support');
         $yaml = <<<END
 table: store
 columns:
@@ -52,7 +54,6 @@ END;
         $sql = $schema->toString();
 
         $expected = <<<END
-ALTER TABLE `store` DROP COLUMN `phone`
 END;
 
         $this->assertEquals($expected, $sql);
@@ -60,9 +61,11 @@ END;
 
     }
 
+    /**
+     * TODO: implement column changes in SQLITE
+     */
     public function testAlterColumns()
     {
-        $this->markTestSkipped('TODO sqlite column change support');
 
         $sql = <<<END
 CREATE TABLE `store` (
@@ -83,8 +86,6 @@ END;
         $sql = $schema->toString();
 
         $expected = <<<END
-ALTER TABLE `store` CHANGE `name` varchar(80);
-ALTER TABLE `store` CHANGE `active` tinyint(1)
 END;
 
         $this->assertEquals($expected, $sql);
@@ -104,7 +105,6 @@ columns:
     type:
         index: true
 END;
-
 
         $schema = new \Scheezy\Schema($this->pdo);
         $schema->loadString($yaml);

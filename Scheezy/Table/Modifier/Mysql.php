@@ -5,7 +5,6 @@ namespace Scheezy\Table\Modifier;
 class Mysql extends \Scheezy\Table\Creator\Mysql
 {
     protected $yaml;
-    protected $table;
     protected $indexes = array();
 
     public function __construct(\Scheezy\Table $table, $yaml)
@@ -33,7 +32,7 @@ class Mysql extends \Scheezy\Table\Creator\Mysql
 
         // see what indexes need to be added
         $desiredIndexes = array();
-        foreach ($this->indexes as $indexOptions) {
+        foreach ($this->table->indexes as $indexOptions) {
             $desiredIndexes[] = $indexOptions['name'];
             $postCommands[] = $this->insureIndex($indexOptions);
         }
@@ -69,7 +68,7 @@ class Mysql extends \Scheezy\Table\Creator\Mysql
         return $this->combineCommands($modifications, $postCommands);
     }
 
-    protected function combineCommands($modifications, $postCommands)
+    public function combineCommands($modifications, $postCommands)
     {
         $commands = array();
 
@@ -91,7 +90,7 @@ class Mysql extends \Scheezy\Table\Creator\Mysql
         if ($this->table->columnExists($name)) {
             return $this->modifyField($name, $options);
         } else {
-            return 'ADD COLUMN ' . $this->createField($name, $options);
+            return 'ADD COLUMN ' . $this->table->createField($name, $options);
         }
     }
 
@@ -100,25 +99,14 @@ class Mysql extends \Scheezy\Table\Creator\Mysql
         if ($this->table->indexExists($options['name'])) {
             // return $this->modifyField($name, $options);
         } else {
-            return $this->createIndex($options);
+            return $this->table->createIndex($options);
         }
-    }
-
-    public function createIndex($options)
-    {
-        if ($options['type'] === true) {
-            $options['type'] = 'INDEX';
-        }
-
-        $options['type'] = strtoupper($options['type']);
-
-        return "{$options['type']} (`{$options['name']}`) ON `{$this->table->name}`";
     }
 
     public function modifyField($name, $options)
     {
         $currentColumnDetails = $this->table->columnDetail($name);
-        $newLine = $this->createField($name, $options, false);
+        $newLine = $this->table->createField($name, $options, false);
         $currentLine = "`$name` {$currentColumnDetails->Type}";
         if ($currentColumnDetails->Null == 'NO') {
             $currentLine .= " NOT NULL";

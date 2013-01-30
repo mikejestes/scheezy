@@ -2,7 +2,7 @@
 
 namespace Scheezy\Table;
 
-class Sqlite implements \Scheezy\Table
+class Sqlite extends \Scheezy\Table
 {
     public $name;
     private $connection;
@@ -11,6 +11,26 @@ class Sqlite implements \Scheezy\Table
     {
         $this->name = $name;
         $this->connection = $connection;
+        $this->definitions = new \Scheezy\Column\Definition('sqlite');
+    }
+
+    public function createIndex($options)
+    {
+        if ($options['type'] === true) {
+            $options['type'] = '';
+        }
+
+        $options['type'] = strtoupper($options['type']);
+        if ($options['type']) {
+            $options['type'] .= ' ';
+        }
+
+        return "CREATE {$options['type']}INDEX `{$options['name']}` ON `{$this->name}` (`{$options['name']}`)";
+    }
+
+    public function addPrimaryKey($name)
+    {
+
     }
 
     public function exists()
