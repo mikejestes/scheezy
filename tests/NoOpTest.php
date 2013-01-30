@@ -2,13 +2,12 @@
 
 namespace Scheezy\Tests;
 
-class NoOpTest extends \PHPUnit_Framework_TestCase
+class NoOpTest extends ScheezyTestSuite
 {
 
     public function testNoOpMysql()
     {
-        $pdo = new \PDO("mysql:host=localhost;dbname=scheezy", 'scheezy', '');
-        $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+        $pdo = $this->getMysqlPdo();
         $pdo->exec('DROP TABLE IF EXISTS `store_user_join`');
         $pdo->exec('DROP TABLE IF EXISTS `store`');
 

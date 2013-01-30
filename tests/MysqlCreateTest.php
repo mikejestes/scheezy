@@ -2,13 +2,12 @@
 
 namespace Scheezy\Tests;
 
-class MysqlCreateTest extends \PHPUnit_Framework_TestCase
+class MysqlCreateTest extends ScheezyTestSuite
 {
 
     public function setUp()
     {
-        $this->pdo = new \PDO("mysql:host=localhost;dbname=scheezy", 'scheezy', '');
-        $this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+        $this->pdo = $this->getMysqlPdo();
         $this->pdo->exec('DROP TABLE IF EXISTS `store`');
         $this->pdo->exec('DROP TABLE IF EXISTS `store_user_join`');
     }

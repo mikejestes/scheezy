@@ -2,7 +2,7 @@
 
 namespace Scheezy\Tests;
 
-class SqliteCreateTest extends \PHPUnit_Framework_TestCase
+class SqliteCreateTest extends ScheezyTestSuite
 {
 
     public function setUp()
@@ -11,7 +11,6 @@ class SqliteCreateTest extends \PHPUnit_Framework_TestCase
         $this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
         $this->pdo->exec('DROP TABLE IF EXISTS `store`');
         $this->pdo->exec('DROP TABLE IF EXISTS `store_user_join`');
-
     }
 
     public function testCreate()

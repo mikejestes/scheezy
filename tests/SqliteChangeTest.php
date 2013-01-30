@@ -2,7 +2,7 @@
 
 namespace Scheezy\Tests;
 
-class SqliteChangeTest extends \PHPUnit_Framework_TestCase
+class SqliteChangeTest extends ScheezyTestSuite
 {
 
     public function setUp()

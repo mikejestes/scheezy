@@ -2,13 +2,12 @@
 
 namespace Scheezy\Tests;
 
-class DropIndexTest extends \PHPUnit_Framework_TestCase
+class DropIndexTest extends ScheezyTestSuite
 {
 
     public function testMysql()
     {
-        $pdo = new \PDO("mysql:host=localhost;dbname=scheezy", 'scheezy', '');
-        $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+        $pdo = $this->pdo = $this->getMysqlPdo();
         $pdo->exec('DROP TABLE IF EXISTS `store_user_join`');
 
         $this->performDropIndex($pdo);

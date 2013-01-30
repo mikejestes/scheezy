@@ -2,12 +2,12 @@
 
 namespace Scheezy\Tests;
 
-class MysqlTypesTest extends \PHPUnit_Framework_TestCase
+class MysqlTypesTest extends ScheezyTestSuite
 {
 
     public function setUp()
     {
-        $this->pdo = new \PDO("mysql:host=localhost;dbname=scheezy", 'scheezy', '');
+        $this->pdo = $this->getMysqlPdo();
         $this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
     }
 

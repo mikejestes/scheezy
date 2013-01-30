@@ -2,7 +2,7 @@
 
 namespace Scheezy\Tests;
 
-class MysqlChangeTest extends \PHPUnit_Framework_TestCase
+class MysqlChangeTest extends ScheezyTestSuite
 {
 
     public function setUp()
@@ -14,8 +14,7 @@ CREATE TABLE `store` (
 PRIMARY KEY (`id`)
 )
 END;
-        $this->pdo = new \PDO("mysql:host=localhost;dbname=scheezy", 'scheezy', '');
-        $this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+        $this->pdo = $this->getMysqlPdo();
         $this->pdo->exec('DROP TABLE IF EXISTS `store`');
         $this->pdo->exec($sql);
 
