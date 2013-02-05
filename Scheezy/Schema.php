@@ -52,11 +52,11 @@ class Schema
         }
     }
 
-    public function toString()
+    public function __toString()
     {
         $sql = '';
         foreach ($this->databases as $database) {
-            $sql .= $database->toString();
+            $sql .= $database->__toString();
         }
         return $sql;
     }

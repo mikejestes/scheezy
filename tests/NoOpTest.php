@@ -38,12 +38,12 @@ class NoOpTest extends ScheezyTestSuite
         // these calls should result in no changes generated
         $schema = new \Scheezy\Schema($pdo);
         $schema->loadFile(dirname(__FILE__) . '/schemas/store_user_join.yaml');
-        $this->assertEquals('', $schema->toString());
+        $this->assertEquals('', $schema->__toString());
         $schema->synchronize();
 
         $schema = new \Scheezy\Schema($pdo);
         $schema->loadFile(dirname(__FILE__) . '/schemas/store.yaml');
-        $this->assertEquals('', $schema->toString());
+        $this->assertEquals('', $schema->__toString());
         $schema->synchronize();
     }
 }

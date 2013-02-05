@@ -24,7 +24,7 @@ END;
     {
         $schema = new \Scheezy\Schema($this->pdo);
         $schema->loadFile(dirname(__FILE__) . '/schemas/store.yaml');
-        $sql = $schema->toString();
+        $sql = $schema->__toString();
 
         $expected = <<<END
 ALTER TABLE `store` ADD COLUMN `name` varchar(80);
@@ -51,7 +51,7 @@ END;
 
         $schema = new \Scheezy\Schema($this->pdo);
         $schema->loadString($yaml);
-        $sql = $schema->toString();
+        $sql = $schema->__toString();
 
         $expected = <<<END
 END;
@@ -83,7 +83,7 @@ END;
 
         $schema = new \Scheezy\Schema($this->pdo);
         $schema->loadFile(dirname(__FILE__) . '/schemas/store.yaml');
-        $sql = $schema->toString();
+        $sql = $schema->__toString();
 
         $expected = <<<END
 END;
@@ -108,7 +108,7 @@ END;
 
         $schema = new \Scheezy\Schema($this->pdo);
         $schema->loadString($yaml);
-        $sql = $schema->toString();
+        $sql = $schema->__toString();
 
         $expected = <<<END
 ALTER TABLE `store` ADD COLUMN `email` varchar(255);

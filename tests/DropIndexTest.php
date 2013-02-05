@@ -52,7 +52,7 @@ DROP INDEX `user_id`
 END;
         }
 
-        $this->assertEquals($sql, $schema->toString());
+        $this->assertEquals($sql, $schema->__toString());
         $schema->synchronize();
     }
 }

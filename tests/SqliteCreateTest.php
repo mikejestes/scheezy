@@ -17,7 +17,7 @@ class SqliteCreateTest extends ScheezyTestSuite
     {
         $schema = new \Scheezy\Schema($this->pdo);
         $schema->loadFile(dirname(__FILE__) . '/schemas/store.yaml');
-        $sql = $schema->toString();
+        $sql = $schema->__toString();
 
         $expected = <<<END
 CREATE TABLE `store` (
@@ -47,7 +47,7 @@ END;
     {
         $schema = new \Scheezy\Schema($this->pdo);
         $schema->loadFile(dirname(__FILE__) . '/schemas/store_user_join.yaml');
-        $sql = $schema->toString();
+        $sql = $schema->__toString();
 
         $expected = <<<END
 CREATE TABLE `store_user_join` (

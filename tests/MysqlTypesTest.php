@@ -36,7 +36,7 @@ END;
         $schema = new \Scheezy\Schema($this->pdo);
         $schema->loadString($yaml);
 
-        $this->assertEquals($this->expectedSql(), $schema->toString());
+        $this->assertEquals($this->expectedSql(), $schema->__toString());
         $schema->synchronize();
     }
 
@@ -72,6 +72,6 @@ END;
 
         $schema = new \Scheezy\Schema($this->pdo);
         $schema->loadString($yaml);
-        $schema->toString();
+        $schema->__toString();
     }
 }

@@ -24,7 +24,7 @@ class Database
         return new $class($this->getTableName(), $this->connection);
     }
 
-    public function toString()
+    public function __toString()
     {
         $table = $this->getTable();
         $type = $this->connection->getAttribute(\PDO::ATTR_DRIVER_NAME);
@@ -37,12 +37,12 @@ class Database
 
         $class = $prefix . ucfirst($type);
         $modifier = new $class($table, $this->yaml);
-        return $modifier->toString();
+        return $modifier->__toString();
     }
 
     public function synchronize()
     {
-        $sql = $this->toString($this->connection->getAttribute(\PDO::ATTR_DRIVER_NAME));
+        $sql = $this->__toString($this->connection->getAttribute(\PDO::ATTR_DRIVER_NAME));
         if (strlen($sql)) {
             $this->connection->exec($sql);
         }

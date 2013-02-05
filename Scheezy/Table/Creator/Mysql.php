@@ -13,7 +13,7 @@ class Mysql
         $this->yaml = $yaml;
     }
 
-    public function toString()
+    public function __toString()
     {
         $creations = array();
         $postCommands = array();

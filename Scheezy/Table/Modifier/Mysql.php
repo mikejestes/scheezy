@@ -13,7 +13,7 @@ class Mysql extends \Scheezy\Table\Creator\Mysql
         $this->yaml = $yaml;
     }
 
-    public function toString()
+    public function __toString()
     {
         $modifications = array();
         $postCommands = array();
