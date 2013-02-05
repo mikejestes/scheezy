@@ -7,6 +7,9 @@ class Mysql
     protected $yaml;
     protected $table;
 
+    protected $mainCommands = array();
+    protected $postCommands = array();
+
     public function __construct(\Scheezy\Table $table, $yaml)
     {
         $this->table = $table;
@@ -15,49 +18,43 @@ class Mysql
 
     public function __toString()
     {
-        $creations = array();
-        $postCommands = array();
-
         $sql = "CREATE TABLE `{$this->table->name}` (\n";
 
         foreach ($this->yaml['columns'] as $fieldName => $fieldOptions) {
-            $creations[] = $this->table->createField($fieldName, $fieldOptions);
+            $this->mainCommands[] = $this->table->createField($fieldName, $fieldOptions);
         }
 
-        foreach ($this->table->indexes as $indexOptions) {
-            $postCommands[] = $this->createIndex($indexOptions);
+        foreach ($this->table->indexes() as $index) {
+            $this->postCommands[] = $this->createIndex($index);
         }
 
-        $creations = array_filter(
-            $creations,
+        return $sql . $this->combineCommands();
+    }
+
+    public function removeEmpty()
+    {
+        $this->mainCommands = array_filter(
+            $this->mainCommands,
             function ($line) {
                 return strlen($line) > 0;
             }
         );
-        $postCommands = array_filter(
-            $postCommands,
+        $this->postCommands = array_filter(
+            $this->postCommands,
             function ($line) {
                 return strlen($line) > 0;
             }
         );
-
-        return $sql . $this->combineCommands($creations, $postCommands);
-
     }
 
-    public function combineCommands($commands, $postCommands)
+    public function combineCommands()
     {
-        return implode(",\n", array_merge($commands, $postCommands)) . "\n)";
+        $this->removeEmpty();
+        return implode(",\n", array_merge($this->mainCommands, $this->postCommands)) . "\n)";
     }
 
-    public function createIndex($options)
+    public function createIndex($index)
     {
-        if ($options['type'] === true) {
-            $options['type'] = 'INDEX';
-        }
-
-        $options['type'] = strtoupper($options['type']);
-
-        return "{$options['type']} (`{$options['name']}`)";
+        return "{$index->type} (`{$index->name}`)";
     }
 }

@@ -14,15 +14,9 @@ class Mysql extends \Scheezy\Table
         $this->definitions = new \Scheezy\Column\Definition('mysql');
     }
 
-    public function createIndex($options)
+    public function createIndex($index)
     {
-        if ($options['type'] === true) {
-            $options['type'] = 'INDEX';
-        }
-
-        $options['type'] = strtoupper($options['type']);
-
-        return "{$options['type']} (`{$options['name']}`) ON `{$this->name}`";
+        return "{$index->type} (`{$index->name}`) ON `{$this->name}`";
     }
 
     public function exists()
@@ -55,33 +49,25 @@ class Mysql extends \Scheezy\Table
         return array_shift($theColumn);
     }
 
-    public function columnExists($column)
-    {
-        $result = $this->connection->query("desc {$this->name}");
-        $columns = $result->fetchAll(\PDO::FETCH_COLUMN, 0);
-        return in_array($column, $columns);
-    }
-
-    public function indexes()
+    public function currentIndexes()
     {
         $sql = "SHOW INDEXES IN `$this->name`";
         $result = $this->connection->query($sql);
-        return $result->fetchAll(\PDO::FETCH_ASSOC);
+        return $result->fetchAll(\PDO::FETCH_CLASS, '\Scheezy\Index');
     }
 
-    public function indexExists($name)
+    public function indexDetail($index)
     {
         $sql = "SHOW INDEXES IN `$this->name`";
         $result = $this->connection->query($sql);
-        $indexes = $result->fetchAll(\PDO::FETCH_ASSOC);
+        $indexes = $result->fetchAll(\PDO::FETCH_CLASS, '\Scheezy\Index');
 
         $exists = array_filter(
             $indexes,
-            function ($indexData) use ($name) {
-                print_r($indexData, $name);
-                return $indexData['Column_name'] == $name;
+            function ($eachIndex) use ($index) {
+                return $eachIndex->field == $index->field;
             }
         );
-        return count($exists) > 0;
+        return count($exists) > 0 ? array_shift($exists) : false;
     }
 }

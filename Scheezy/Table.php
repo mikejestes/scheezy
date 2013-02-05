@@ -4,7 +4,7 @@ namespace Scheezy;
 
 abstract class Table
 {
-    public $indexes = array();
+    protected $indexes = array();
 
     public function createField($name, $options)
     {
@@ -14,9 +14,12 @@ abstract class Table
         }
 
         if (isset($options['index'])) {
-            $this->indexes[] = array(
-                'name' => $name,
-                'type' => $options['index'],
+            $this->indexes[] = new Index(
+                array(
+                    'name' => $name,
+                    'field' => $name,
+                    'type' => $options['index'],
+                )
             );
         }
 
@@ -28,15 +31,33 @@ abstract class Table
 
     protected function addPrimaryKey($name)
     {
-        $this->indexes[] = array(
-            'name' => $name,
-            'type' => 'PRIMARY KEY',
+        $this->indexes[] = new Index(
+            array(
+                'name' => $name,
+                'field' => $name,
+                'type' => 'PRIMARY KEY',
+            )
         );
+    }
+
+    public function indexes()
+    {
+        return $this->indexes;
+    }
+
+    public function indexExists($index)
+    {
+        return !!$this->indexDetail($index);
+    }
+
+    public function columnExists($column)
+    {
+        return !!$this->columnDetail($column);
     }
 
     abstract public function exists();
     abstract public function columns();
     abstract public function columnDetail($column);
-    abstract public function columnExists($column);
-    abstract public function indexExists($name);
+    abstract public function indexDetail($index);
+    abstract public function currentIndexes();
 }

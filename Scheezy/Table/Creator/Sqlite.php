@@ -4,13 +4,15 @@ namespace Scheezy\Table\Creator;
 
 class Sqlite extends Mysql
 {
-    public function createIndex($options)
+    public function createIndex($index)
     {
-        return $this->table->createIndex($options);
+        $type = $index->getType();
+        return "CREATE $type `{$index->name}` ON `{$this->table->name}` (`{$index->field}`)";
     }
 
-    public function combineCommands($commands, $postCommands)
+    public function combineCommands()
     {
-        return implode(";\n", array_merge(array(implode(",\n", $commands) . "\n)"), $postCommands));
+        $this->removeEmpty();
+        return implode(";\n", array_merge(array(implode(",\n", $this->mainCommands) . "\n)"), $this->postCommands));
     }
 }

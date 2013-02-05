@@ -15,72 +15,49 @@ class Mysql extends \Scheezy\Table\Creator\Mysql
 
     public function __toString()
     {
-        $modifications = array();
-        $postCommands = array();
-
         // see if columns need to be dropped
         foreach ($this->table->columns() as $column) {
             if (!in_array($column->Field, array_keys($this->yaml['columns']))) {
-                $modifications[] = $this->dropField($column->Field);
+                $this->mainCommands[] = $this->dropField($column->Field);
             }
         }
 
         // see if columns need to be modified or added
         foreach ($this->yaml['columns'] as $fieldName => $fieldOptions) {
-            $modifications[] = $this->insureField($fieldName, $fieldOptions);
+            $this->mainCommands[] = $this->insureField($fieldName, $fieldOptions);
         }
 
         // see what indexes need to be added
         $desiredIndexes = array();
-        foreach ($this->table->indexes as $indexOptions) {
-            $desiredIndexes[] = $indexOptions['name'];
-            $postCommands[] = $this->insureIndex($indexOptions);
+        foreach ($this->table->indexes() as $index) {
+            $desiredIndexes[] = $index->field;
+            $this->postCommands[] = $this->insureIndex($index);
         }
 
         // see what indexes need to be dropped
-        $columnKey = 'Column_name';
-        $nameKey = 'Key_name';
-
-        // HACK
-        if ($this->table instanceof \Scheezy\Table\Sqlite) {
-            $columnKey = $nameKey = 'name';
-        }
-
-        foreach ($this->table->indexes() as $index) {
-            if (!in_array($index[$columnKey], $desiredIndexes) && $index[$nameKey] != 'PRIMARY') {
-                $postCommands[] = $this->dropIndex($index[$nameKey]);
+        foreach ($this->table->currentIndexes() as $index) {
+            if (!in_array($index->field, $desiredIndexes) && $index->type != 'PRIMARY KEY') {
+                $this->postCommands[] = $this->dropIndex($index);
             }
         }
 
-        $modifications = array_filter(
-            $modifications,
-            function ($line) {
-                return strlen($line) > 0;
-            }
-        );
-        $postCommands = array_filter(
-            $postCommands,
-            function ($line) {
-                return strlen($line) > 0;
-            }
-        );
-
-        return $this->combineCommands($modifications, $postCommands);
+        return $this->combineCommands();
     }
 
-    public function combineCommands($modifications, $postCommands)
+    public function combineCommands()
     {
+        $this->removeEmpty();
         $commands = array();
 
-        if (count($modifications)) {
-            $action = implode(",\n", $modifications);
-            if (count($modifications) > 0) {
+        if (count($this->mainCommands)) {
+            $action = implode(",\n", $this->mainCommands);
+            if (count($this->mainCommands) > 0) {
                 $action = "\n$action";
             }
             $commands[] = "ALTER TABLE `{$this->table->name}`$action";
         }
 
-        $sql = implode(";\n", array_merge($commands, $postCommands));
+        $sql = implode(";\n", array_merge($commands, $this->postCommands));
 
         return $sql;
     }
@@ -94,12 +71,12 @@ class Mysql extends \Scheezy\Table\Creator\Mysql
         }
     }
 
-    public function insureIndex($options)
+    public function insureIndex($index)
     {
-        if ($this->table->indexExists($options['name'])) {
-            // return $this->modifyField($name, $options);
-        } else {
-            return $this->table->createIndex($options);
+        if ($this->table->indexExists($index)) {
+            return $this->modifyIndex($index);
+        } elseif ($index->type != 'PRIMARY KEY') {
+            return $this->table->createIndex($index);
         }
     }
 
@@ -119,13 +96,35 @@ class Mysql extends \Scheezy\Table\Creator\Mysql
         }
     }
 
+    public function modifyIndex($index)
+    {
+        $match = true;
+
+        $currentIndex = $this->table->indexDetail($index);
+
+        if ($currentIndex->getType() != $index->getType()) {
+            $match = false;
+        }
+
+        if (!$match) {
+            $this->postCommands[] = $this->dropIndex($currentIndex);
+            $this->postCommands[] = $this->createIndex($index);
+        }
+    }
+
+    public function createIndex($index)
+    {
+        $type = $index->getType();
+        return "CREATE $type `{$index->name}` ON `{$this->table->name}` (`{$index->field}`)";
+    }
+
     public function dropField($name)
     {
         return "DROP COLUMN `$name`";
     }
 
-    public function dropIndex($name)
+    public function dropIndex($index)
     {
-        return "DROP INDEX `$name` ON `{$this->table->name}`";
+        return "DROP INDEX `{$index->name}` ON `{$this->table->name}`";
     }
 }

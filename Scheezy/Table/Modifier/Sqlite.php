@@ -4,8 +4,9 @@ namespace Scheezy\Table\Modifier;
 
 class Sqlite extends Mysql
 {
-    public function combineCommands($modifications, $postCommands)
+    public function combineCommands()
     {
+        $this->removeEmpty();
         $commands = array();
         $tableName = $this->table->name;
 
@@ -14,10 +15,10 @@ class Sqlite extends Mysql
                 $line = str_replace(' NOT NULL', '', $line);
                 return "ALTER TABLE `{$tableName}` $line";
             },
-            $modifications
+            $this->mainCommands
         );
 
-        $sql = implode(";\n", array_merge($commands, $postCommands));
+        $sql = implode(";\n", array_merge($commands, $this->postCommands));
 
         return $sql;
     }
@@ -34,8 +35,8 @@ class Sqlite extends Mysql
     }
 
 
-    public function dropIndex($name)
+    public function dropIndex($index)
     {
-        return "DROP INDEX `$name`";
+        return "DROP INDEX `{$index->name}`";
     }
 }

@@ -14,18 +14,10 @@ class Sqlite extends \Scheezy\Table
         $this->definitions = new \Scheezy\Column\Definition('sqlite');
     }
 
-    public function createIndex($options)
+    public function createIndex($index)
     {
-        if ($options['type'] === true) {
-            $options['type'] = '';
-        }
-
-        $options['type'] = strtoupper($options['type']);
-        if ($options['type']) {
-            $options['type'] .= ' ';
-        }
-
-        return "CREATE {$options['type']}INDEX `{$options['name']}` ON `{$this->name}` (`{$options['name']}`)";
+        $type = $index->getType();
+        return "CREATE $type `{$index->name}` ON `{$this->name}` (`{$index->field}`)";
     }
 
     public function addPrimaryKey($name)
@@ -63,33 +55,25 @@ class Sqlite extends \Scheezy\Table
         return array_shift($theColumn);
     }
 
-    public function columnExists($column)
-    {
-        $sql = "PRAGMA table_info('{$this->name}')";
-        $result = $this->connection->query($sql);
-        $columns = $result->fetchAll(\PDO::FETCH_COLUMN, 1);
-        return in_array($column, $columns);
-    }
-
-    public function indexes()
+    public function currentIndexes()
     {
         $sql = "PRAGMA INDEX_LIST('$this->name')";
         $result = $this->connection->query($sql);
-        return $result->fetchAll(\PDO::FETCH_ASSOC);
+        return $result->fetchAll(\PDO::FETCH_CLASS, '\Scheezy\Index');
     }
 
-    public function indexExists($name)
+    public function indexDetail($index)
     {
         $sql = "PRAGMA INDEX_LIST('$this->name')";
         $result = $this->connection->query($sql);
-        $indexes = $result->fetchAll(\PDO::FETCH_ASSOC);
+        $indexes = $result->fetchAll(\PDO::FETCH_CLASS, '\Scheezy\Index');
 
         $exists = array_filter(
             $indexes,
-            function ($indexData) use ($name) {
-                return $indexData['name'] == $name;
+            function ($indexData) use ($index) {
+                return $indexData->name == $index->name;
             }
         );
-        return count($exists) > 0;
+        return count($exists) > 0 ? array_shift($exists) : false;
     }
 }
