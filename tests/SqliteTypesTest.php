@@ -21,7 +21,9 @@ CREATE TABLE `types` (
 `calendar` date NOT NULL,
 `paragraph` text NOT NULL,
 `price` decimal(10,2) NOT NULL,
-`latitude` decimal(9,6) NOT NULL
+`latitude` decimal(9,6) NOT NULL,
+`record_year` year NOT NULL,
+`record_time` time NOT NULL
 )
 END;
     }

@@ -31,6 +31,10 @@ columns:
         type: decimal
         precision: 9
         scale: 6
+    record_year:
+        type: year
+    record_time:
+        type: time
 END;
 
         $schema = new \Scheezy\Schema($this->pdo);
@@ -51,6 +55,8 @@ CREATE TABLE `types` (
 `paragraph` text NOT NULL,
 `price` decimal(10,2) NOT NULL,
 `latitude` decimal(9,6) NOT NULL,
+`record_year` year NOT NULL,
+`record_time` time NOT NULL,
 PRIMARY KEY (`id`)
 )
 END;

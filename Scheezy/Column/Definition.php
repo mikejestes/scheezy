@@ -5,6 +5,15 @@ namespace Scheezy\Column;
 class Definition
 {
     private $driver;
+    private $basicTypes = array(
+        'boolean' => 'tinyint(1)',
+        'datetime' => 'datetime',
+        'date' => 'date',
+        'time' => 'time',
+        'year' => 'year',
+        'timestamp' => 'timestamp',
+        'text' => 'text',
+    );
 
     public function __construct($driver)
     {
@@ -15,8 +24,13 @@ class Definition
     {
         $fnc = str_replace('make', 'create', $desiredFnc);
 
+        $type = strtolower(str_replace('make', '', $desiredFnc));
+
+        if (array_key_exists($type, $this->basicTypes)) {
+            return $this->createBasic($args[0], $type);
+        }
+
         if (!method_exists($this, $fnc)) {
-            $type = strtolower(str_replace('make', '', $desiredFnc));
             throw new \Exception('Unknown Scheezy type: ' . $type);
         }
 
@@ -58,29 +72,10 @@ class Definition
         return "`$name` INTEGER$extra";
     }
 
-    public function createBoolean($name)
+    public function createBasic($name, $type)
     {
-        return "`$name` tinyint(1) NOT NULL";
-    }
-
-    public function createDatetime($name)
-    {
-        return "`$name` datetime NOT NULL";
-    }
-
-    public function createDate($name)
-    {
-        return "`$name` date NOT NULL";
-    }
-
-    public function createTimestamp($name)
-    {
-        return "`$name` timestamp NOT NULL";
-    }
-
-    public function createText($name)
-    {
-        return "`$name` text NOT NULL";
+        $typeDef = $this->basicTypes[$type];
+        return "`$name` $typeDef NOT NULL";
     }
 
     public function createDecimal($name, $options)
@@ -111,6 +106,5 @@ class Definition
         );
 
         return $this->makeInteger($name, $options);
-
     }
 }
