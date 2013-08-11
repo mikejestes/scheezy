@@ -14,11 +14,6 @@ class Mysql extends \Scheezy\Table
         $this->definitions = new \Scheezy\Column\Definition('mysql');
     }
 
-    public function createIndex($index)
-    {
-        return "{$index->type} (`{$index->name}`) ON `{$this->name}`";
-    }
-
     public function exists()
     {
         $sql = "show tables";

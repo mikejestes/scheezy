@@ -76,7 +76,7 @@ class Mysql extends \Scheezy\Table\Creator\Mysql
         if ($this->table->indexExists($index)) {
             return $this->modifyIndex($index);
         } elseif ($index->type != 'PRIMARY KEY') {
-            return $this->table->createIndex($index);
+            return $this->createIndex($index);
         }
     }
 

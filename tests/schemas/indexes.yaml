@@ -1,0 +1,11 @@
+table: indexes
+columns:
+    id:
+    a:
+        index: true
+    b:
+        index: true
+    c:
+        index: true
+    d:
+        index: true

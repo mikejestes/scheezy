@@ -114,8 +114,8 @@ END;
 ALTER TABLE `store`
 ADD COLUMN `email` varchar(255) NOT NULL,
 ADD COLUMN `type` varchar(255) NOT NULL;
-UNIQUE (`email`) ON `store`;
-INDEX (`type`) ON `store`
+CREATE UNIQUE INDEX `email` ON `store` (`email`);
+CREATE INDEX `type` ON `store` (`type`)
 END;
 
         $this->assertEquals($expected, $sql);
