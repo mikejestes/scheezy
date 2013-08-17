@@ -48,7 +48,7 @@ END;
     {
         return <<<END
 CREATE TABLE `types` (
-`id` int(11) NOT NULL AUTO_INCREMENT,
+`id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
 `created` datetime NOT NULL,
 `updated` timestamp NOT NULL,
 `calendar` date NOT NULL,
@@ -56,8 +56,7 @@ CREATE TABLE `types` (
 `price` decimal(10,2) NOT NULL,
 `latitude` decimal(9,6) NOT NULL,
 `record_year` year NOT NULL,
-`record_time` time NOT NULL,
-PRIMARY KEY (`id`)
+`record_time` time NOT NULL
 )
 END;
     }

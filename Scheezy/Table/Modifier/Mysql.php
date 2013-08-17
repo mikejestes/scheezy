@@ -75,7 +75,7 @@ class Mysql extends \Scheezy\Table\Creator\Mysql
     {
         if ($this->table->indexExists($index)) {
             return $this->modifyIndex($index);
-        } elseif ($index->type != 'PRIMARY KEY') {
+        } else {
             return $this->createIndex($index);
         }
     }
@@ -90,6 +90,9 @@ class Mysql extends \Scheezy\Table\Creator\Mysql
         }
         if ($currentColumnDetails->Extra == 'auto_increment') {
             $currentLine .= " AUTO_INCREMENT";
+        }
+        if ($currentColumnDetails->Key == 'PRI') {
+            $currentLine .= " PRIMARY KEY";
         }
         if ($newLine != $currentLine) {
             return "CHANGE `$name` " . $newLine;

@@ -27,13 +27,12 @@ class MysqlCreateTest extends ScheezyTestSuite
 
         $expected = <<<END
 CREATE TABLE `store` (
-`id` int(11) NOT NULL AUTO_INCREMENT,
+`id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
 `name` varchar(80) NOT NULL,
 `active` tinyint(1) NOT NULL,
 `user_count` int(11) NOT NULL,
 `website` varchar(255) NOT NULL,
-`phone` varchar(255) NOT NULL,
-PRIMARY KEY (`id`)
+`phone` varchar(255) NOT NULL
 )
 END;
 

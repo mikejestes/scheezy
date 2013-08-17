@@ -9,7 +9,6 @@ abstract class Table
     public function createField($name, $options)
     {
         if ($name === 'id') {
-            $this->addPrimaryKey($name);
             return $this->definitions->createId($name, (array)$options);
         }
 
@@ -27,17 +26,6 @@ abstract class Table
         $fnc = 'make' . ucfirst($type);
 
         return $this->definitions->$fnc($name, $options);
-    }
-
-    protected function addPrimaryKey($name)
-    {
-        $this->indexes[] = new Index(
-            array(
-                'name' => $name,
-                'field' => $name,
-                'type' => 'PRIMARY KEY',
-            )
-        );
     }
 
     public function indexes()

@@ -20,11 +20,6 @@ class Sqlite extends \Scheezy\Table
         return "CREATE $type `{$index->name}` ON `{$this->name}` (`{$index->field}`)";
     }
 
-    public function addPrimaryKey($name)
-    {
-
-    }
-
     public function exists()
     {
         $sql = "SELECT name FROM sqlite_master WHERE type = 'table'";

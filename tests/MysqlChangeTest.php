@@ -9,9 +9,8 @@ class MysqlChangeTest extends ScheezyTestSuite
     {
         $sql = <<<END
 CREATE TABLE `store` (
-`id` int(11) NOT NULL AUTO_INCREMENT,
-`phone` varchar(255) NOT NULL,
-PRIMARY KEY (`id`)
+`id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+`phone` varchar(255) NOT NULL
 )
 END;
         $this->pdo = $this->getMysqlPdo();
@@ -65,13 +64,12 @@ END;
     {
         $sql = <<<END
 CREATE TABLE `store` (
-`id` int(11) NOT NULL AUTO_INCREMENT,
+`id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
 `name` varchar(90) NOT NULL,
 `active` int(11) NOT NULL,
 `user_count` int(11) NOT NULL,
 `website` varchar(255) NOT NULL,
-`phone` varchar(255) NOT NULL,
-PRIMARY KEY (`id`)
+`phone` varchar(255) NOT NULL
 )
 END;
 

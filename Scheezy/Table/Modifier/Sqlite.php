@@ -34,7 +34,6 @@ class Sqlite extends Mysql
         return '';
     }
 
-
     public function dropIndex($index)
     {
         return "DROP INDEX `{$index->name}`";

@@ -1,7 +1,7 @@
 Scheezy
 =======
 
-A PHP 5.3+ library to translate yaml schema definitions into real actual databases.
+A PHP 5.3+ library to translate yaml schema definitions into real, actual databases.
 You could view this as an intentional anti-pattern to database migration techniques.
 For when you don't want to migrate up and down, just dictate the database schema.
 
@@ -16,7 +16,7 @@ Add to your `composer.json` file:
         "require": {
             "mikejestes/scheezy": "*"
         },
-        
+
         ...
     }
 ```
@@ -64,7 +64,11 @@ A column defaults to string type, unless the name is `id` which is given an inte
 
 ## Database engines
 
-Currently supports mysql and sqlite through PDO classes. Sqlite support for changing or dropping columns is pending.
+Currently supports mysql and sqlite through PDO classes.
+
+## Known issues
+
+Sqlite support for changing or dropping columns is pending.
 
 ## API
 
