@@ -27,6 +27,9 @@ columns:
         type: text
     price:
         type: decimal
+    default_num:
+        type: integer
+        default: 42
     latitude:
         type: decimal
         precision: 9
@@ -54,6 +57,7 @@ CREATE TABLE `types` (
 `calendar` date NOT NULL,
 `paragraph` text NOT NULL,
 `price` decimal(10,2) NOT NULL,
+`default_num` int(11) NOT NULL DEFAULT 42,
 `latitude` decimal(9,6) NOT NULL,
 `record_year` year NOT NULL,
 `record_time` time NOT NULL

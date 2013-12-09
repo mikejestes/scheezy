@@ -73,6 +73,9 @@ class Definition
             $extra .= ' AUTOINCREMENT';
         }
 
+        $default = $this->getOption($options, 'default');
+        $extra .= $default !== null ? (' DEFAULT ' . $default) : '';
+
         return "`$name` INTEGER$extra";
     }
 
