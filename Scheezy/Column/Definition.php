@@ -54,8 +54,10 @@ class Definition
         $length = $this->getOption($options, 'length', 11);
         $autoIncrement = $this->getOption($options, 'auto_increment');
         $primaryKey = $this->getOption($options, 'primary_key');
+        $default = $this->getOption($options, 'default');
         $extra = $autoIncrement ? ' AUTO_INCREMENT' : '';
         $extra .= $primaryKey ? ' PRIMARY KEY' : '';
+        $extra .= $default !== null ? (' DEFAULT ' . $default) : '';
         return "`$name` int($length) NOT NULL$extra";
     }
 
