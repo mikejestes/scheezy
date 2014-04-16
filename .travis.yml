@@ -5,7 +5,7 @@ php:
   - 5.3
 script: phpunit
 before_script:
-   - composer install
-   - mysql -e 'create database scheezy_test;'
+    - composer install --no-dev
+    - mysql -e 'create database scheezy_test;'
 services:
     - mysql
