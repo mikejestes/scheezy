@@ -5,7 +5,7 @@ A PHP 5.3+ library to translate yaml schema definitions into real, actual databa
 You could view this as an intentional anti-pattern to database migration techniques.
 For when you don't want to migrate up and down, just dictate the database schema.
 
-[![Build Status](https://travis-ci.org/mikejestes/scheezy.png?branch=master)](https://travis-ci.org/mikejestes/scheezy)
+[![Build Status](https://travis-ci.org/mikejestes/scheezy.svg?branch=master)](https://travis-ci.org/mikejestes/scheezy)
 
 ## Installation
 
