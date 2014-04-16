@@ -64,18 +64,14 @@ A column defaults to string type, unless the name is `id` which is given an inte
 
 ## Database engines
 
-Currently supports mysql and sqlite through PDO classes.
-
-## Known issues
-
-Sqlite support for changing or dropping columns is pending.
+Currently supports mysql through PDO classes.
 
 ## API
 
 Load a directory of `.yaml` files
 
 ```php
-$pdoHandle = new PDO('sqlite::memory:');
+$pdoHandle = new PDO("mysql:host=localhost;dbname=scheezy_test", 'root', '');
 
 $schema = new \Scheezy\Schema($pdoHandle);
 $schema->loadDirectory(dirname(__FILE__) . '/schemas/');

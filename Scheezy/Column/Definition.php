@@ -34,13 +34,7 @@ class Definition
             throw new \Exception('Unknown Scheezy type: ' . $type);
         }
 
-        $driverFnc = $fnc . ucfirst($this->driver);
-        if (method_exists($this, $driverFnc)) {
-            return call_user_func_array(array($this, $driverFnc), $args);
-        } else {
-            return call_user_func_array(array($this, $fnc), $args);
-        }
-
+        return call_user_func_array(array($this, $fnc), $args);
     }
 
     public function createString($name, $options)
@@ -59,24 +53,6 @@ class Definition
         $extra .= $primaryKey ? ' PRIMARY KEY' : '';
         $extra .= $default !== null ? (' DEFAULT ' . $default) : '';
         return "`$name` int($length) NOT NULL$extra";
-    }
-
-    public function createIntegerSqlite($name, $options)
-    {
-        $extra = ' NOT NULL';
-
-        if ($this->getOption($options, 'primary_key')) {
-            $extra = ' PRIMARY KEY';
-        }
-
-        if ($this->getOption($options, 'auto_increment')) {
-            $extra .= ' AUTOINCREMENT';
-        }
-
-        $default = $this->getOption($options, 'default');
-        $extra .= $default !== null ? (' DEFAULT ' . $default) : '';
-
-        return "`$name` INTEGER$extra";
     }
 
     public function createBasic($name, $type)

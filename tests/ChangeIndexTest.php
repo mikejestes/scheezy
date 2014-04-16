@@ -13,15 +13,6 @@ class ChangeIndexTest extends ScheezyTestSuite
         $this->performChangeIndex($pdo);
     }
 
-    public function testSqlite()
-    {
-        $pdo = new \PDO("sqlite::memory:");
-        $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-        $pdo->exec('DROP TABLE IF EXISTS `store_user_join`');
-
-        $this->performChangeIndex($pdo);
-    }
-
     protected function performChangeIndex($pdo)
     {
         $schema = new \Scheezy\Schema($pdo);
@@ -47,13 +38,6 @@ END;
 DROP INDEX `user_id` ON `store_user_join`;
 CREATE UNIQUE INDEX `user_id` ON `store_user_join` (`user_id`)
 END;
-
-        if ($pdo->getAttribute(\PDO::ATTR_DRIVER_NAME) == 'sqlite') {
-            $sql = <<<END
-DROP INDEX `user_id`;
-CREATE UNIQUE INDEX `user_id` ON `store_user_join` (`user_id`)
-END;
-        }
 
         $this->assertEquals($sql, $schema->__toString());
         $schema->synchronize();

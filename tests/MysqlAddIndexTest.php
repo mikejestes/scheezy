@@ -75,12 +75,6 @@ ALTER TABLE `pk`
 ADD COLUMN `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY
 END;
 
-        if ($this->pdo->getAttribute(\PDO::ATTR_DRIVER_NAME) == 'sqlite') {
-            $sql = <<<END
-ALTER TABLE `pk` ADD COLUMN `id` INTEGER PRIMARY KEY AUTOINCREMENT
-END;
-        }
-
         $this->assertEquals($sql, $schema->__toString());
         $schema->synchronize();
     }

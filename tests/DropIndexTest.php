@@ -13,15 +13,6 @@ class DropIndexTest extends ScheezyTestSuite
         $this->performDropIndex($pdo);
     }
 
-    public function testSqlite()
-    {
-        $pdo = new \PDO("sqlite::memory:");
-        $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-        $pdo->exec('DROP TABLE IF EXISTS `store_user_join`');
-
-        $this->performDropIndex($pdo);
-    }
-
     protected function performDropIndex($pdo)
     {
         $schema = new \Scheezy\Schema($pdo);
@@ -45,12 +36,6 @@ END;
         $sql = <<<END
 DROP INDEX `user_id` ON `store_user_join`
 END;
-
-        if ($pdo->getAttribute(\PDO::ATTR_DRIVER_NAME) == 'sqlite') {
-            $sql = <<<END
-DROP INDEX `user_id`
-END;
-        }
 
         $this->assertEquals($sql, $schema->__toString());
         $schema->synchronize();

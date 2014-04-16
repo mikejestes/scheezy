@@ -14,16 +14,6 @@ class NoOpTest extends ScheezyTestSuite
         $this->performTest($pdo);
     }
 
-    public function testNoOpSqlite()
-    {
-        $pdo = new \PDO('sqlite::memory:');
-        $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-        $pdo->exec('DROP TABLE IF EXISTS `store_user_join`');
-        $pdo->exec('DROP TABLE IF EXISTS `store`');
-
-        $this->performTest($pdo);
-    }
-
     protected function performTest($pdo)
     {
         $schema = new \Scheezy\Schema($pdo);
