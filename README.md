@@ -57,6 +57,12 @@ columns:
         type: decimal
         precision: 9
         scale: 6
+    status:
+        type: enum
+        values:
+            - approved
+            - disabled
+            - draft
 
 ```
 

@@ -32,7 +32,8 @@ CREATE TABLE `store` (
 `active` tinyint(1) NOT NULL,
 `user_count` int(11) NOT NULL,
 `website` varchar(255) NOT NULL,
-`phone` varchar(255) NOT NULL
+`phone` varchar(255) NOT NULL,
+`status` enum('approved','disabled','draft')
 )
 END;
 

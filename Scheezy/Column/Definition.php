@@ -68,6 +68,16 @@ class Definition
         return "`$name` decimal($precision,$scale) NOT NULL";
     }
 
+    public function createEnum($name, $options)
+    {
+        $values = $this->getOption($options, 'values');
+        if (!$values) {
+            throw new \Exception('ENUM types must specify a set of values.');
+        }
+        $joinedValues = implode("','", $values);
+        return "`$name` enum('$joinedValues')" ;
+    }
+
     public function getOption($options, $key, $default = null)
     {
         if (!isset($options[$key])) {
