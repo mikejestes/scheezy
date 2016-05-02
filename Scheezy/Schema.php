@@ -32,7 +32,8 @@ class Schema
 
     public function loadDirectory($directory)
     {
-        $files = glob($directory . '/*.yaml');
+        $files = glob($directory . '/*.yml');
+        $files = array_merge($files + glob($directory . '/*.yaml'));
         foreach ($files as $file) {
             $this->loadFile($file);
         }
