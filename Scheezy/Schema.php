@@ -24,7 +24,7 @@ class Schema
 
     public function loadFile($file)
     {
-        $yaml = Yaml::parse($file);
+        $yaml = Yaml::parse(file_get_contents($file));
         $database = new Database($yaml, $this->connection);
         $this->databases[] = $database;
         return $database;
