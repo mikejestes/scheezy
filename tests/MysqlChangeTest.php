@@ -17,6 +17,15 @@ END;
         $this->pdo->exec('DROP TABLE IF EXISTS `store`');
         $this->pdo->exec($sql);
 
+        $sql = <<<END
+CREATE TABLE `null_store` (
+`id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+`phone` varchar(255)
+)
+END;
+        $this->pdo = $this->getMysqlPdo();
+        $this->pdo->exec('DROP TABLE IF EXISTS `null_store`');
+        $this->pdo->exec($sql);
     }
 
     public function testAddColumns()
@@ -122,5 +131,51 @@ END;
         $this->assertEquals($expected, $sql);
         $schema->synchronize();
 
+    }
+
+    public function testDropNull()
+    {
+        $yaml = <<<END
+table: store
+columns:
+    id:
+    phone:
+        allow_null: true
+END;
+
+        $schema = new \Scheezy\Schema($this->pdo);
+        $schema->loadString($yaml);
+        $sql = $schema->__toString();
+
+        $expected = <<<END
+ALTER TABLE `store`
+CHANGE `phone` `phone` varchar(255)
+END;
+
+        $this->assertEquals($expected, $sql);
+        $schema->synchronize();
+    }
+
+    public function testAddNull()
+    {
+        $yaml = <<<END
+table: null_store
+columns:
+    id:
+    phone:
+        allow_null: false
+END;
+
+        $schema = new \Scheezy\Schema($this->pdo);
+        $schema->loadString($yaml);
+        $sql = $schema->__toString();
+
+        $expected = <<<END
+ALTER TABLE `null_store`
+CHANGE `phone` `phone` varchar(255) NOT NULL
+END;
+
+        $this->assertEquals($expected, $sql);
+        $schema->synchronize();
     }
 }

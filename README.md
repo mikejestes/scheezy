@@ -39,6 +39,7 @@ columns:
         index: unique
     active:
         type: boolean
+        allow_null: true
     user_count:
         type: integer
         index: true

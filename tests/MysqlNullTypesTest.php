@@ -2,7 +2,7 @@
 
 namespace Scheezy\Tests;
 
-class MysqlTypesTest extends ScheezyTestSuite
+class MysqlNullTypesTest extends ScheezyTestSuite
 {
 
     public function setUp()
@@ -14,31 +14,41 @@ class MysqlTypesTest extends ScheezyTestSuite
     public function testTypes()
     {
         $yaml = <<<END
-table: types
+table: null_types
 columns:
     id:
     created:
         type: datetime
+        allow_null: true
     updated:
         type: timestamp
+        allow_null: true
     calendar:
         type: date
+        allow_null: true
     paragraph:
         type: text
+        allow_null: true
     title:
+        allow_null: true
     price:
         type: decimal
+        allow_null: true
     default_num:
         type: integer
         default: 42
+        allow_null: true
     latitude:
         type: decimal
         precision: 9
         scale: 6
+        allow_null: true
     record_year:
         type: year
+        allow_null: true
     record_time:
         type: time
+        allow_null: true
 END;
 
         $schema = new \Scheezy\Schema($this->pdo);
@@ -51,38 +61,19 @@ END;
     protected function expectedSql()
     {
         return <<<END
-CREATE TABLE `types` (
+CREATE TABLE `null_types` (
 `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-`created` datetime NOT NULL,
-`updated` timestamp NOT NULL,
-`calendar` date NOT NULL,
-`paragraph` text NOT NULL,
-`title` varchar(255) NOT NULL,
-`price` decimal(10,2) NOT NULL,
-`default_num` int(11) NOT NULL DEFAULT 42,
-`latitude` decimal(9,6) NOT NULL,
-`record_year` year NOT NULL,
-`record_time` time NOT NULL
+`created` datetime,
+`updated` timestamp,
+`calendar` date,
+`paragraph` text,
+`title` varchar(255),
+`price` decimal(10,2),
+`default_num` int(11) DEFAULT 42,
+`latitude` decimal(9,6),
+`record_year` year,
+`record_time` time
 )
 END;
-    }
-
-    /**
-     * @expectedException Exception
-     * @expectedExceptionMessage Unknown Scheezy type: flabbergasted
-     */
-    public function testExceptionForUnknownType()
-    {
-        $yaml = <<<END
-table: oops
-columns:
-    id:
-    created:
-        type: flabbergasted
-END;
-
-        $schema = new \Scheezy\Schema($this->pdo);
-        $schema->loadString($yaml);
-        $schema->__toString();
     }
 }

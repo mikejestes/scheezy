@@ -27,7 +27,7 @@ class Definition
         $type = strtolower(str_replace('make', '', $desiredFnc));
 
         if (array_key_exists($type, $this->basicTypes)) {
-            return $this->createBasic($args[0], $type);
+            return $this->createBasic($args[0], $type, $args[1]);
         }
 
         if (!method_exists($this, $fnc)) {
@@ -40,7 +40,8 @@ class Definition
     public function createString($name, $options)
     {
         $length = $this->getOption($options, 'length', 255);
-        return "`$name` varchar($length) NOT NULL";
+        $null = empty($options['allow_null']) ? ' NOT NULL' : '';
+        return "`$name` varchar($length){$null}";
     }
 
     public function createInteger($name, $options)
@@ -52,20 +53,23 @@ class Definition
         $extra = $autoIncrement ? ' AUTO_INCREMENT' : '';
         $extra .= $primaryKey ? ' PRIMARY KEY' : '';
         $extra .= $default !== null ? (' DEFAULT ' . $default) : '';
-        return "`$name` int($length) NOT NULL$extra";
+        $null = empty($options['allow_null']) ? ' NOT NULL' : '';
+        return "`$name` int($length){$null}{$extra}";
     }
 
-    public function createBasic($name, $type)
+    public function createBasic($name, $type, $options)
     {
         $typeDef = $this->basicTypes[$type];
-        return "`$name` $typeDef NOT NULL";
+        $null = empty($options['allow_null']) ? ' NOT NULL' : '';
+        return "`$name` $typeDef{$null}";
     }
 
     public function createDecimal($name, $options)
     {
         $precision = $this->getOption($options, 'precision', 10);
         $scale = $this->getOption($options, 'scale', 2);
-        return "`$name` decimal($precision,$scale) NOT NULL";
+        $null = empty($options['allow_null']) ? ' NOT NULL' : '';
+        return "`$name` decimal($precision,$scale){$null}";
     }
 
     public function createEnum($name, $options)
