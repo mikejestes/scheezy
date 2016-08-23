@@ -6,7 +6,7 @@ php:
     - 5.4
     - 5.3
     - hhvm
-script: phpunit
+script: vendor/bin/phpunit
 before_script:
     - composer install --no-dev
     - mysql -e 'create database scheezy_test;'
