@@ -5,7 +5,7 @@ namespace Scheezy\Tests;
 class MysqlCreateTest extends ScheezyTestSuite
 {
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->pdo = $this->getMysqlPdo();
         $this->pdo->exec('DROP TABLE IF EXISTS `store`');

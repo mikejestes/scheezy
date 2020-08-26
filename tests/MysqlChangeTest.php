@@ -4,8 +4,7 @@ namespace Scheezy\Tests;
 
 class MysqlChangeTest extends ScheezyTestSuite
 {
-
-    public function setUp()
+    protected function setUp(): void
     {
         $sql = <<<END
 CREATE TABLE `store` (

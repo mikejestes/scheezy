@@ -5,7 +5,7 @@ namespace Scheezy\Tests;
 class MysqlTypesTest extends ScheezyTestSuite
 {
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->pdo = $this->getMysqlPdo();
         $this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
@@ -67,12 +67,11 @@ CREATE TABLE `types` (
 END;
     }
 
-    /**
-     * @expectedException Exception
-     * @expectedExceptionMessage Unknown Scheezy type: flabbergasted
-     */
     public function testExceptionForUnknownType()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Unknown Scheezy type: flabbergasted');
+
         $yaml = <<<END
 table: oops
 columns:

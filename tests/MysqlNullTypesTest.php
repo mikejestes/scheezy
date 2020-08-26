@@ -5,7 +5,7 @@ namespace Scheezy\Tests;
 class MysqlNullTypesTest extends ScheezyTestSuite
 {
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->pdo = $this->getMysqlPdo();
         $this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);

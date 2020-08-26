@@ -5,19 +5,17 @@ namespace Scheezy\Tests;
 class MysqlInvalidTest extends ScheezyTestSuite
 {
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->pdo = $this->getMysqlPdo();
         $this->pdo->exec('DROP TABLE IF EXISTS `store`');
         $this->pdo->exec('DROP TABLE IF EXISTS `store_user_join`');
     }
 
-
-    /**
-     * @expectedException Exception
-     */
     public function testMissingEnumValues()
     {
+        $this->expectException(\Exception::class);
+
         $yaml = <<<END
 table: store
 columns:
